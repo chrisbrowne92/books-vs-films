@@ -70,12 +70,12 @@ for url in wiki_urls:
                         film_data = parse_film(film)  # extract film data
                         if film_data is not None:  # if data was extracted
                             films.append(film_data)  # add to list
-                        else:
-                            reject_count += 1
                     if len(films) > 0:  # if at least one film was extracted
                         for film in films:
                             film.update(book)  # combine data from each film with the book's
                             books_and_films.append(film)  # add to overall list
+                    else:
+                        reject_count += 1
                 else:
                     reject_count += 1
 
