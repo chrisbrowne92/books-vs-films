@@ -86,4 +86,4 @@ print('{} processed\n{} successfully parsed\n{} rejected ({}%)'.format(total,
                                                                        int(round(100 * reject_count / total))))
 
 books_and_films = pd.DataFrame(books_and_films)  # convert to dataframe
-books_and_films.to_csv('books_and_films', index=False)  # save
+books_and_films.to_csv('books_and_films.csv', index=False)  # save
