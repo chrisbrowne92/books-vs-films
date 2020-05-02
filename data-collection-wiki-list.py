@@ -27,7 +27,7 @@ def parse_book(book):
     if book_data is None:  # if data was not found
         return None
     else:
-        return dict(zip(['book_title', 'book_year', 'book_author'], book_data.groups()))
+        return dict(zip(['book_title', 'book_year', 'book_author'], map(str.strip, book_data.groups())))
 
 
 def parse_film(film):
@@ -44,7 +44,7 @@ def parse_film(film):
     if film_data is None:  # if data was not found
         return None
     else:
-        return dict(zip(['film_title', 'film_year'], film_data.groups()))
+        return dict(zip(['film_title', 'film_year'], map(str.strip, film_data.groups())))
 
 
 # gather a list of books that have been made into films
