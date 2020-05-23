@@ -47,13 +47,12 @@ def title_from_goodreads_url(url):
 
 
 def clean_up(title):
-    out = title
+    out = title.lower()
     # remove leading 'the'
     if out[:4].lower() == 'the ':
         out = out[4:]
-    # remove '.' and ',' characters
-    out = out.replace('.', ' ').replace('  ', ' ')
-    out = out.replace(',', '')
+    # remove '-', '.' and ',' characters
+    out = out.replace('-', ' ').replace('.', ' ').replace('  ', ' ').replace(',', '')
     return out
 
 
@@ -70,6 +69,8 @@ def goodreads_rating(book):
     if len(results) > 1:
         titles = results_page.find_all('a', {'class': 'bookTitle'})  # list search results
         book_title = clean_up(book['book_title'])
+        if book_title == 'adventure':
+            x = 1
         result_titles = (clean_up(title_from_goodreads_url(title['href']))
                          for title in titles[:min(5, len(titles))])  # generator to extract title from results (top 5)
         i = 0  # index counter
@@ -83,12 +84,12 @@ def goodreads_rating(book):
 
 
 # import data
-# books_and_films = pd.read_csv('books_and_films.csv')
-books_and_films = pd.read_csv('book_and_films_with_imdb_rating.csv').head(20)
+books_and_films = pd.read_csv('books_and_films.csv')
+# books_and_films = pd.read_csv('book_and_films_with_imdb_rating.csv').head(100)
 
 # gather film rating from IMDb & save
-# books_and_films['film_rating_imdb'] = books_and_films.apply(imdb_rating, axis=1)
+books_and_films['film_rating_imdb'] = books_and_films.apply(imdb_rating, axis=1)
 books_and_films['book_rating_goodreads'] = books_and_films.apply(goodreads_rating, axis=1)
-books_and_films.to_csv('book_and_films_with_imdb_rating.csv', index=False)
+books_and_films.to_csv('book_and_films_with_ratings.csv', index=False)
 
 pass
