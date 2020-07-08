@@ -79,6 +79,7 @@ for url in wiki_urls:
                 else:
                     reject_count += 1
 
+# print number of rows process, successfully & unsucessfully (rejected)
 total = reject_count + len(books_and_films)
 print('{} processed\n{} successfully parsed\n{} rejected ({}%)'.format(total,
                                                                        len(books_and_films),

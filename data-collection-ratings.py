@@ -5,6 +5,7 @@ from re import match
 
 
 def get_imdb_search_url(title, year):
+    # produce a search url for imdb for a given title and year
     return 'https://www.imdb.com/search/title/?' + \
            'title={}&'.format(title.replace(' ', '+')) + \
            'title_type=feature&' + \
@@ -12,13 +13,14 @@ def get_imdb_search_url(title, year):
 
 
 def get_goodreads_search_url(title, author):
+    # produce a search url for goodreads for a given title & year
     return 'https://www.goodreads.com/search?utf8=%E2%9C%93&query={}'.format((title+' '+author).replace(' ', '+'))
 
 
 def imdb_rating(film):
     # returns the imdb rating for film
     # returns -1 if there are no search results for film
-    # returns -2 if no exact title match when mulitple films were found for film's name and year
+    # returns -2 if no exact title match, when mulitple films were found for film's name and year
     url = get_imdb_search_url(title=film['film_title'], year=film['film_year'])
     results_page = Soup(requests.get(url).text, features='html.parser')  # search for film & year and cook
     results = results_page.find_all('div', {'class': 'inline-block ratings-imdb-rating'})  # ratings-imdb-rating
@@ -35,20 +37,24 @@ def imdb_rating(film):
 
 
 def remove_stars_span(goodreads_search_result):
+    # cleaning
+    # removes span tag in search results
     for span in goodreads_search_result.find_all('span', {'class': 'stars staticStars notranslate'}):
         span.decompose()
     return goodreads_search_result
 
 
 def title_from_goodreads_url(url):
+    # extract book title from url
     # '/book/show/2956.The_Adventures_of_Huckleberry_Finn?from_search=true&amp;from_srp=true&amp;qid=qcSdUb4S3c&amp;rank=1'
     title = match(r'/book/show/[0-9]+[\.\-](.+)\?from_search.+', url).groups()[0]
     return title.replace('_', ' ')
 
 
 def clean_up(title):
+    # clean up the title for consistent searching
     out = title.lower()
-    # remove leading 'the'
+    # remove any leading 'the'
     if out[:4].lower() == 'the ':
         out = out[4:]
     # remove '-', '.' and ',' characters
@@ -87,7 +93,7 @@ def goodreads_rating(book):
 books_and_films = pd.read_csv('books_and_films.csv')
 # books_and_films = pd.read_csv('book_and_films_with_imdb_rating.csv').head(100)
 
-# gather film rating from IMDb & save
+# gather film rating from IMDb & GoodReads, and save
 books_and_films['film_rating_imdb'] = books_and_films.apply(imdb_rating, axis=1)
 books_and_films['book_rating_goodreads'] = books_and_films.apply(goodreads_rating, axis=1)
 books_and_films.to_csv('book_and_films_with_ratings.csv', index=False)
