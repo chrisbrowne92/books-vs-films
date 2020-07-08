@@ -23,8 +23,12 @@ x = np.linspace(0, data['book_rating_goodreads'].min())  # x values for extrapol
 ax.plot(x, model.predict(add_constant(x)),
         '--', color=ax.lines[0].get_color(), linewidth=ax.lines[0].get_linewidth())  # plot extrapolated lobf
 
-# p value & r-squared for label
+# p value, r-squared & correlation coefficient for label
 p_value = model.pvalues['book_rating_goodreads']
 rsquared = model.rsquared
-ax.lines[0].set_label('$y = {:.2f}x + {:.2f}$\n$p = {:.2f}$\n$R^2 = {:.2f}$'.format(slope, intercept, p_value, rsquared))
+corr = data[['film_rating_imdb', 'book_rating_goodreads']].corr().loc['film_rating_imdb', 'book_rating_goodreads']
+ax.lines[0].set_label('$y = {:.2f}x + {:.2f}$\n'.format(slope, intercept) +
+                      '$p = {:.2f}$\n$R^2 = {:.2f}$\ncorr coef$ = {:.2f}$'.format(p_value, rsquared, corr))
 plt.legend(loc='upper left')
+
+plt.savefig('book-vs-films-regplot.png')  # save
